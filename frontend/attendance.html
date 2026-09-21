@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+```
+<title>Attendance - StudentMS</title>
+
+<link rel="stylesheet" href="style.css">
+```
+
+</head>
+
+<body>
+<script>
+    const admin = localStorage.getItem("admin");
+
+    if (!admin) {
+        window.location.href = "index.html";
+    }
+</script>
+```
+<!-- SIDEBAR -->
+<aside class="sidebar">
+
+    <h2>StudentMS</h2>
+
+    <a href="dashboard.html">
+        Dashboard
+    </a>
+
+    <a href="students.html">
+        Students
+    </a>
+
+    <a href="attendance.html" class="active">
+        Attendance
+    </a>
+
+    <a href="marks.html">
+        Marks
+    </a>
+<a href="courses.html">Courses</a>
+
+    <a href="index.html" class="logout">
+        Logout
+    </a>
+
+</aside>
+
+
+<!-- MAIN CONTENT -->
+<main class="main-content">
+
+    <!-- PAGE HEADER -->
+    <header>
+
+        <h1>Attendance</h1>
+
+        <p>
+            Record and manage student attendance
+        </p>
+
+    </header>
+
+
+    <!-- MARK ATTENDANCE -->
+    <section class="dashboard-card">
+
+        <div class="table-header">
+
+            <div>
+                <h2>Mark Attendance</h2>
+
+                <p style="color: #7b8194; font-size: 13px;">
+                    Select a student and record their attendance
+                </p>
+            </div>
+
+        </div>
+
+
+        <form id="attendanceForm">
+
+            <div class="form-grid">
+
+                <!-- STUDENT -->
+                <div>
+
+                    <label for="attendanceStudent">
+                        Student
+                    </label>
+
+                    <select
+                        id="attendanceStudent"
+                        required
+                    >
+
+                        <option value="">
+                            Select Student
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- DATE -->
+                <div>
+
+                    <label for="attendanceDate">
+                        Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="attendanceDate"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- STATUS -->
+                <div>
+
+                    <label for="attendanceStatus">
+                        Status
+                    </label>
+
+                    <select
+                        id="attendanceStatus"
+                        required
+                    >
+
+                        <option value="">
+                            Select Status
+                        </option>
+
+                        <option value="Present">
+                            Present
+                        </option>
+
+                        <option value="Absent">
+                            Absent
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-buttons">
+
+                <button type="submit">
+                    Save Attendance
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+
+    <!-- ATTENDANCE RECORDS -->
+    <section class="dashboard-card">
+
+        <div class="table-header">
+
+            <div>
+                <h2>Attendance Records</h2>
+
+                <p style="color: #7b8194; font-size: 13px;">
+                    View recorded attendance
+                </p>
+            </div>
+
+        </div>
+
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Student</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody id="attendanceTable">
+
+                <!-- Attendance records loaded by JavaScript -->
+
+            </tbody>
+
+        </table>
+
+    </section>
+
+</main>
+
+
+<!-- JAVASCRIPT -->
+<script src="script.js"></script>
+```
+
+</body>
+
+</html>

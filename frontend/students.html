@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Students - StudentMS</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<script>
+    const admin = localStorage.getItem("admin");
+
+    if (!admin) {
+        window.location.href = "index.html";
+    }
+</script>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <h2>StudentMS</h2>
+
+        <a href="dashboard.html">
+            Dashboard
+        </a>
+
+        <a href="students.html" class="active">
+            Students
+        </a>
+
+        <a href="attendance.html">
+            Attendance
+        </a>
+
+        <a href="marks.html">
+            Marks
+        </a>
+
+        <a href="courses.html">
+            Courses
+        </a>
+
+        <a href="index.html" class="logout">
+            Logout
+        </a>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- PAGE HEADER -->
+        <header class="students-header">
+
+            <div>
+                <h1>Students</h1>
+
+                <p>
+                    Manage student information and records
+                </p>
+            </div>
+
+            <button onclick="showAddStudent()">
+                + Add Student
+            </button>
+
+        </header>
+
+
+        <!-- ADD STUDENT FORM -->
+        <div
+            id="studentFormContainer"
+            class="form-container"
+        >
+
+            <h2>Add New Student</h2>
+
+            <form id="studentForm">
+
+                <div class="form-grid">
+
+                    <!-- NAME -->
+                    <div>
+                        <label for="studentName">
+                            Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="studentName"
+                            placeholder="Enter student name"
+                            required
+                        >
+                    </div>
+
+
+                    <!-- EMAIL -->
+                    <div>
+                        <label for="studentEmail">
+                            Email
+                        </label>
+
+                        <input
+                            type="email"
+                            id="studentEmail"
+                            placeholder="Enter email address"
+                            required
+                        >
+                    </div>
+
+
+                    <!-- PHONE -->
+                    <div>
+                        <label for="studentPhone">
+                            Phone
+                        </label>
+
+                        <input
+                            type="text"
+                            id="studentPhone"
+                            placeholder="Enter phone number"
+                            required
+                        >
+                    </div>
+
+
+                    <!-- COURSE -->
+                    <div>
+                        <label for="studentCourse">
+                            Course
+                        </label>
+
+                        <select
+                            id="studentCourse"
+                            required
+                        >
+
+                            <option value="">
+                                Select Course
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- AGE -->
+                    <div>
+                        <label for="studentAge">
+                            Age
+                        </label>
+
+                        <input
+                            type="number"
+                            id="studentAge"
+                            placeholder="Enter age"
+                            min="1"
+                            max="100"
+                            required
+                        >
+                    </div>
+
+
+                    <!-- GENDER -->
+                    <div>
+                        <label for="studentGender">
+                            Gender
+                        </label>
+
+                        <select
+                            id="studentGender"
+                            required
+                        >
+
+                            <option value="">
+                                Select Gender
+                            </option>
+
+                            <option value="Male">
+                                Male
+                            </option>
+
+                            <option value="Female">
+                                Female
+                            </option>
+
+                            <option value="Other">
+                                Other
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- BUTTONS -->
+                <div class="form-buttons">
+
+                    <button type="submit">
+                        Add Student
+                    </button>
+
+                    <button
+                        type="button"
+                        onclick="hideAddStudent()"
+                    >
+                        Cancel
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+
+        <!-- EDIT STUDENT FORM -->
+        <div
+            id="editFormContainer"
+            class="form-container"
+        >
+
+            <h2>Edit Student</h2>
+
+            <form id="editStudentForm">
+
+                <input
+                    type="hidden"
+                    id="editStudentId"
+                >
+
+
+                <div class="form-grid">
+
+                    <!-- NAME -->
+                    <div>
+                        <label for="editStudentName">
+                            Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="editStudentName"
+                            placeholder="Enter student name"
+                            required
+                        >
+                    </div>
+
+
+                    <!-- EMAIL -->
+                    <div>
+                        <label for="editStudentEmail">
+                            Email
+                        </label>
+
+                        <input
+                            type="email"
+                            id="editStudentEmail"
+                            placeholder="Enter email address"
+                            required
+                        >
+                    </div>
+
+
+                    <!-- PHONE -->
+                    <div>
+                        <label for="editStudentPhone">
+                            Phone
+                        </label>
+
+                        <input
+                            type="text"
+                            id="editStudentPhone"
+                            placeholder="Enter phone number"
+                            required
+                        >
+                    </div>
+
+
+                    <!-- COURSE -->
+                    <div>
+                        <label for="editStudentCourse">
+                            Course
+                        </label>
+
+                        <select
+                            id="editStudentCourse"
+                            required
+                        >
+
+                            <option value="">
+                                Select Course
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- AGE -->
+                    <div>
+                        <label for="editStudentAge">
+                            Age
+                        </label>
+
+                        <input
+                            type="number"
+                            id="editStudentAge"
+                            placeholder="Enter age"
+                            min="1"
+                            max="100"
+                            required
+                        >
+                    </div>
+
+
+                    <!-- GENDER -->
+                    <div>
+                        <label for="editStudentGender">
+                            Gender
+                        </label>
+
+                        <select
+                            id="editStudentGender"
+                            required
+                        >
+
+                            <option value="">
+                                Select Gender
+                            </option>
+
+                            <option value="Male">
+                                Male
+                            </option>
+
+                            <option value="Female">
+                                Female
+                            </option>
+
+                            <option value="Other">
+                                Other
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- BUTTONS -->
+                <div class="form-buttons">
+
+                    <button type="submit">
+                        Update Student
+                    </button>
+
+                    <button
+                        type="button"
+                        onclick="hideEditStudent()"
+                    >
+                        Cancel
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+
+        <!-- STUDENTS TABLE -->
+        <section class="dashboard-card">
+
+            <div class="table-header">
+
+                <div>
+
+                    <h2>
+                        All Students
+                    </h2>
+
+                    <p
+                        style="
+                            color: #7b8194;
+                            font-size: 13px;
+                        "
+                    >
+                        View and manage registered students
+                    </p>
+
+                </div>
+
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search students..."
+                    oninput="searchStudents()"
+                >
+
+            </div>
+
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Name</th>
+
+                        <th>Email</th>
+
+                        <th>Phone</th>
+
+                        <th>Course</th>
+
+                        <th>Age</th>
+
+                        <th>Gender</th>
+
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="studentsTable">
+
+                    <!-- Students loaded by JavaScript -->
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+    </main>
+
+
+    <!-- JAVASCRIPT -->
+    <script src="script.js"></script>
+
+</body>
+
+</html>
