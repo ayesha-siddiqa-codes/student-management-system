@@ -2,10 +2,10 @@
 // API URLS
 // =====================================================
 
-const API_URL = "http://localhost:5000/api/students";
-const ATTENDANCE_API = "http://localhost:5000/api/attendance";
-const MARKS_API = "http://localhost:5000/api/marks";
-const COURSES_API = "http://localhost:5000/api/courses";
+const API_URL = "https://student-management-system-qyfs.onrender.com/api/students";
+const ATTENDANCE_API = "https://student-management-system-qyfs.onrender.com/api/attendance";
+const MARKS_API = "https://student-management-system-qyfs.onrender.com/api/marks";
+const COURSES_API = "https://student-management-system-qyfs.onrender.com/api/courses";
 
 let allStudents = [];
 let allCourses = [];
@@ -17,9 +17,7 @@ let attendanceChart = null;
 // =====================================================
 
 async function loadStudents() {
-
     try {
-
         const response = await fetch(API_URL);
 
         if (!response.ok) {
@@ -28,7 +26,6 @@ async function loadStudents() {
 
         const students = await response.json();
 
-        // Make sure we always have an array
         allStudents = Array.isArray(students) ? students : [];
 
         displayStudents(allStudents);
@@ -36,11 +33,8 @@ async function loadStudents() {
         updateStudentCount(allStudents);
 
     } catch (error) {
-
         console.error("Error loading students:", error);
-
     }
-
 }
 
 
@@ -49,40 +43,26 @@ async function loadStudents() {
 // =====================================================
 
 function displayStudents(students) {
-
     const table = document.getElementById("studentsTable");
 
     if (!table) return;
 
     table.innerHTML = "";
 
-    if (!Array.isArray(students)) {
-        return;
-    }
+    if (!Array.isArray(students)) return;
 
     students.forEach(student => {
-
         const row = document.createElement("tr");
 
         row.innerHTML = `
-
             <td>${student.name || ""}</td>
-
             <td>${student.email || ""}</td>
-
             <td>${student.phone || ""}</td>
-
             <td>${student.course || ""}</td>
-
             <td>${student.age || ""}</td>
-
             <td>${student.gender || ""}</td>
-
             <td>
-
-                <button
-                    onclick="editStudent('${student._id}')"
-                >
+                <button onclick="editStudent('${student._id}')">
                     Edit
                 </button>
 
@@ -92,15 +72,11 @@ function displayStudents(students) {
                 >
                     Delete
                 </button>
-
             </td>
-
         `;
 
         table.appendChild(row);
-
     });
-
 }
 
 
@@ -109,18 +85,13 @@ function displayStudents(students) {
 // =====================================================
 
 function updateStudentCount(students) {
-
     const count = document.getElementById("studentCount");
 
     if (count) {
-
-        count.textContent =
-            Array.isArray(students)
-                ? students.length
-                : 0;
-
+        count.textContent = Array.isArray(students)
+            ? students.length
+            : 0;
     }
-
 }
 
 
@@ -129,38 +100,27 @@ function updateStudentCount(students) {
 // =====================================================
 
 function displayRecentStudents(students) {
-
     const table = document.getElementById("studentTable");
 
     if (!table) return;
 
     table.innerHTML = "";
 
-    if (!Array.isArray(students)) {
-        return;
-    }
+    if (!Array.isArray(students)) return;
 
-    const recentStudents =
-        students.slice(-5).reverse();
+    const recentStudents = students.slice(-5).reverse();
 
     recentStudents.forEach(student => {
-
         const row = document.createElement("tr");
 
         row.innerHTML = `
-
             <td>${student.name || ""}</td>
-
             <td>${student.email || ""}</td>
-
             <td>${student.course || ""}</td>
-
         `;
 
         table.appendChild(row);
-
     });
-
 }
 
 
@@ -169,42 +129,25 @@ function displayRecentStudents(students) {
 // =====================================================
 
 function searchStudents() {
-
-    const searchInput =
-        document.getElementById("searchInput");
+    const searchInput = document.getElementById("searchInput");
 
     if (!searchInput) return;
 
-    const searchValue =
-        searchInput.value
-            .toLowerCase()
-            .trim();
+    const searchValue = searchInput.value.toLowerCase().trim();
 
-    const filteredStudents =
-        allStudents.filter(student => {
+    const filteredStudents = allStudents.filter(student => {
+        const name = (student.name || "").toLowerCase();
+        const email = (student.email || "").toLowerCase();
+        const course = (student.course || "").toLowerCase();
 
-            const name =
-                (student.name || "")
-                    .toLowerCase();
-
-            const email =
-                (student.email || "")
-                    .toLowerCase();
-
-            const course =
-                (student.course || "")
-                    .toLowerCase();
-
-            return (
-                name.includes(searchValue) ||
-                email.includes(searchValue) ||
-                course.includes(searchValue)
-            );
-
-        });
+        return (
+            name.includes(searchValue) ||
+            email.includes(searchValue) ||
+            course.includes(searchValue)
+        );
+    });
 
     displayStudents(filteredStudents);
-
 }
 
 
@@ -213,34 +156,20 @@ function searchStudents() {
 // =====================================================
 
 function showAddStudent() {
-
-    const form =
-        document.getElementById(
-            "studentFormContainer"
-        );
+    const form = document.getElementById("studentFormContainer");
 
     if (form) {
-
         form.style.display = "block";
-
     }
-
 }
 
 
 function hideAddStudent() {
-
-    const form =
-        document.getElementById(
-            "studentFormContainer"
-        );
+    const form = document.getElementById("studentFormContainer");
 
     if (form) {
-
         form.style.display = "none";
-
     }
-
 }
 
 
@@ -248,123 +177,53 @@ function hideAddStudent() {
 // ADD STUDENT
 // =====================================================
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
+document.addEventListener("DOMContentLoaded", function () {
+    const studentForm = document.getElementById("studentForm");
 
-        const studentForm =
-            document.getElementById(
-                "studentForm"
-            );
+    if (!studentForm) return;
 
-        if (!studentForm) return;
+    studentForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
 
-        studentForm.addEventListener(
-            "submit",
-            async function (event) {
+        const studentData = {
+            name: document.getElementById("studentName").value.trim(),
+            email: document.getElementById("studentEmail").value.trim(),
+            phone: document.getElementById("studentPhone").value.trim(),
+            course: document.getElementById("studentCourse").value.trim(),
+            age: Number(document.getElementById("studentAge").value),
+            gender: document.getElementById("studentGender").value
+        };
 
-                event.preventDefault();
+        try {
+            const response = await fetch(API_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(studentData)
+            });
 
-                const studentData = {
+            const result = await response.json();
 
-                    name:
-                        document.getElementById(
-                            "studentName"
-                        ).value.trim(),
-
-                    email:
-                        document.getElementById(
-                            "studentEmail"
-                        ).value.trim(),
-
-                    phone:
-                        document.getElementById(
-                            "studentPhone"
-                        ).value.trim(),
-
-                    course:
-                        document.getElementById(
-                            "studentCourse"
-                        ).value.trim(),
-
-                    age:
-                        Number(
-                            document.getElementById(
-                                "studentAge"
-                            ).value
-                        ),
-
-                    gender:
-                        document.getElementById(
-                            "studentGender"
-                        ).value
-
-                };
-
-                try {
-
-                    const response =
-                        await fetch(
-                            API_URL,
-                            {
-                                method: "POST",
-
-                                headers: {
-                                    "Content-Type":
-                                        "application/json"
-                                },
-
-                                body:
-                                    JSON.stringify(
-                                        studentData
-                                    )
-                            }
-                        );
-
-                    const result =
-                        await response.json();
-
-                    if (!response.ok) {
-
-                        alert(
-                            result.message ||
-                            "Failed to add student."
-                        );
-
-                        return;
-
-                    }
-
-                    alert(
-                        "Student added successfully!"
-                    );
-
-                    studentForm.reset();
-
-                    hideAddStudent();
-
-                    await loadStudents();
-
-                    await loadStudentOptions();
-
-                } catch (error) {
-
-                    console.error(
-                        "Add student error:",
-                        error
-                    );
-
-                    alert(
-                        "Failed to add student."
-                    );
-
-                }
-
+            if (!response.ok) {
+                alert(result.message || "Failed to add student.");
+                return;
             }
-        );
 
-    }
-);
+            alert("Student added successfully!");
+
+            studentForm.reset();
+            hideAddStudent();
+
+            await loadStudents();
+            await loadStudentOptions();
+
+        } catch (error) {
+            console.error("Add student error:", error);
+            alert("Failed to add student.");
+        }
+    });
+});
 
 
 // =====================================================
@@ -372,65 +231,28 @@ document.addEventListener(
 // =====================================================
 
 async function editStudent(id) {
-
     try {
+        const response = await fetch(`${API_URL}/${id}`);
 
-        const response =
-            await fetch(
-                `${API_URL}/${id}`
-            );
-
-        const student =
-            await response.json();
+        const student = await response.json();
 
         if (!response.ok) {
-
-            alert(
-                student.message ||
-                "Failed to load student."
-            );
-
+            alert(student.message || "Failed to load student.");
             return;
-
         }
 
-        document.getElementById(
-            "editStudentId"
-        ).value = student._id;
+        document.getElementById("editStudentId").value = student._id;
+        document.getElementById("editStudentName").value = student.name || "";
+        document.getElementById("editStudentEmail").value = student.email || "";
+        document.getElementById("editStudentPhone").value = student.phone || "";
+        document.getElementById("editStudentCourse").value = student.course || "";
+        document.getElementById("editStudentAge").value = student.age || "";
+        document.getElementById("editStudentGender").value = student.gender || "";
 
-        document.getElementById(
-            "editStudentName"
-        ).value = student.name || "";
-
-        document.getElementById(
-            "editStudentEmail"
-        ).value = student.email || "";
-
-        document.getElementById(
-            "editStudentPhone"
-        ).value = student.phone || "";
-
-        document.getElementById(
-            "editStudentCourse"
-        ).value = student.course || "";
-
-        document.getElementById(
-            "editStudentAge"
-        ).value = student.age || "";
-
-        document.getElementById(
-            "editStudentGender"
-        ).value = student.gender || "";
-
-        const editForm =
-            document.getElementById(
-                "editFormContainer"
-            );
+        const editForm = document.getElementById("editFormContainer");
 
         if (editForm) {
-
             editForm.style.display = "block";
-
         }
 
         window.scrollTo({
@@ -439,18 +261,9 @@ async function editStudent(id) {
         });
 
     } catch (error) {
-
-        console.error(
-            "Edit student error:",
-            error
-        );
-
-        alert(
-            "Failed to load student."
-        );
-
+        console.error("Edit student error:", error);
+        alert("Failed to load student.");
     }
-
 }
 
 
@@ -459,18 +272,11 @@ async function editStudent(id) {
 // =====================================================
 
 function hideEditStudent() {
-
-    const form =
-        document.getElementById(
-            "editFormContainer"
-        );
+    const form = document.getElementById("editFormContainer");
 
     if (form) {
-
         form.style.display = "none";
-
     }
-
 }
 
 
@@ -478,128 +284,55 @@ function hideEditStudent() {
 // UPDATE STUDENT
 // =====================================================
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
+document.addEventListener("DOMContentLoaded", function () {
+    const editStudentForm = document.getElementById("editStudentForm");
 
-        const editStudentForm =
-            document.getElementById(
-                "editStudentForm"
-            );
+    if (!editStudentForm) return;
 
-        if (!editStudentForm) return;
+    editStudentForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
 
-        editStudentForm.addEventListener(
-            "submit",
-            async function (event) {
+        const id = document.getElementById("editStudentId").value;
 
-                event.preventDefault();
+        const updatedStudent = {
+            name: document.getElementById("editStudentName").value.trim(),
+            email: document.getElementById("editStudentEmail").value.trim(),
+            phone: document.getElementById("editStudentPhone").value.trim(),
+            course: document.getElementById("editStudentCourse").value.trim(),
+            age: Number(document.getElementById("editStudentAge").value),
+            gender: document.getElementById("editStudentGender").value
+        };
 
-                const id =
-                    document.getElementById(
-                        "editStudentId"
-                    ).value;
+        try {
+            const response = await fetch(`${API_URL}/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(updatedStudent)
+            });
 
-                const updatedStudent = {
+            const result = await response.json();
 
-                    name:
-                        document.getElementById(
-                            "editStudentName"
-                        ).value.trim(),
-
-                    email:
-                        document.getElementById(
-                            "editStudentEmail"
-                        ).value.trim(),
-
-                    phone:
-                        document.getElementById(
-                            "editStudentPhone"
-                        ).value.trim(),
-
-                    course:
-                        document.getElementById(
-                            "editStudentCourse"
-                        ).value.trim(),
-
-                    age:
-                        Number(
-                            document.getElementById(
-                                "editStudentAge"
-                            ).value
-                        ),
-
-                    gender:
-                        document.getElementById(
-                            "editStudentGender"
-                        ).value
-
-                };
-
-                try {
-
-                    const response =
-                        await fetch(
-                            `${API_URL}/${id}`,
-                            {
-                                method: "PUT",
-
-                                headers: {
-                                    "Content-Type":
-                                        "application/json"
-                                },
-
-                                body:
-                                    JSON.stringify(
-                                        updatedStudent
-                                    )
-                            }
-                        );
-
-                    const result =
-                        await response.json();
-
-                    if (!response.ok) {
-
-                        alert(
-                            result.message ||
-                            "Failed to update student."
-                        );
-
-                        return;
-
-                    }
-
-                    alert(
-                        "Student updated successfully!"
-                    );
-
-                    editStudentForm.reset();
-
-                    hideEditStudent();
-
-                    await loadStudents();
-
-                    await loadStudentOptions();
-
-                } catch (error) {
-
-                    console.error(
-                        "Update student error:",
-                        error
-                    );
-
-                    alert(
-                        "Failed to update student."
-                    );
-
-                }
-
+            if (!response.ok) {
+                alert(result.message || "Failed to update student.");
+                return;
             }
-        );
 
-    }
-);
+            alert("Student updated successfully!");
+
+            editStudentForm.reset();
+            hideEditStudent();
+
+            await loadStudents();
+            await loadStudentOptions();
+
+        } catch (error) {
+            console.error("Update student error:", error);
+            alert("Failed to update student.");
+        }
+    });
+});
 
 
 // =====================================================
@@ -607,59 +340,33 @@ document.addEventListener(
 // =====================================================
 
 async function deleteStudent(id) {
-
-    const confirmed =
-        confirm(
-            "Are you sure you want to delete this student?"
-        );
+    const confirmed = confirm(
+        "Are you sure you want to delete this student?"
+    );
 
     if (!confirmed) return;
 
     try {
+        const response = await fetch(`${API_URL}/${id}`, {
+            method: "DELETE"
+        });
 
-        const response =
-            await fetch(
-                `${API_URL}/${id}`,
-                {
-                    method: "DELETE"
-                }
-            );
-
-        const result =
-            await response.json();
+        const result = await response.json();
 
         if (!response.ok) {
-
-            alert(
-                result.message ||
-                "Failed to delete student."
-            );
-
+            alert(result.message || "Failed to delete student.");
             return;
-
         }
 
-        alert(
-            "Student deleted successfully!"
-        );
+        alert("Student deleted successfully!");
 
         await loadStudents();
-
         await loadStudentOptions();
 
     } catch (error) {
-
-        console.error(
-            "Delete student error:",
-            error
-        );
-
-        alert(
-            "Failed to delete student."
-        );
-
+        console.error("Delete student error:", error);
+        alert("Failed to delete student.");
     }
-
 }
 
 
@@ -668,99 +375,56 @@ async function deleteStudent(id) {
 // =====================================================
 
 async function loadStudentOptions() {
-
     try {
-
-        const response =
-            await fetch(API_URL);
+        const response = await fetch(API_URL);
 
         if (!response.ok) {
-
-            throw new Error(
-                "Failed to load students"
-            );
-
+            throw new Error("Failed to load students");
         }
 
-        const students =
-            await response.json();
+        const students = await response.json();
 
-        const safeStudents =
-            Array.isArray(students)
-                ? students
-                : [];
+        const safeStudents = Array.isArray(students)
+            ? students
+            : [];
 
         const attendanceSelect =
-            document.getElementById(
-                "attendanceStudent"
-            );
+            document.getElementById("attendanceStudent");
 
         const marksSelect =
-            document.getElementById(
-                "marksStudent"
-            );
+            document.getElementById("marksStudent");
 
         if (attendanceSelect) {
-
             attendanceSelect.innerHTML =
                 `<option value="">Select Student</option>`;
 
             safeStudents.forEach(student => {
+                const option = document.createElement("option");
 
-                const option =
-                    document.createElement(
-                        "option"
-                    );
+                option.value = student._id;
+                option.textContent = student.name;
 
-                option.value =
-                    student._id;
-
-                option.textContent =
-                    student.name;
-
-                attendanceSelect.appendChild(
-                    option
-                );
-
+                attendanceSelect.appendChild(option);
             });
-
         }
 
         if (marksSelect) {
-
             marksSelect.innerHTML =
                 `<option value="">Select Student</option>`;
 
             safeStudents.forEach(student => {
+                const option = document.createElement("option");
 
-                const option =
-                    document.createElement(
-                        "option"
-                    );
+                option.value = student._id;
+                option.textContent = student.name;
 
-                option.value =
-                    student._id;
-
-                option.textContent =
-                    student.name;
-
-                marksSelect.appendChild(
-                    option
-                );
-
+                marksSelect.appendChild(option);
             });
-
         }
 
     } catch (error) {
-
-        console.error(
-            "Error loading student options:",
-            error
-        );
-
+        console.error("Error loading student options:", error);
     }
-
 }
 
 
@@ -768,106 +432,61 @@ async function loadStudentOptions() {
 // ATTENDANCE FORM
 // =====================================================
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
+document.addEventListener("DOMContentLoaded", function () {
+    const attendanceForm =
+        document.getElementById("attendanceForm");
 
-        const attendanceForm =
-            document.getElementById(
-                "attendanceForm"
-            );
+    if (!attendanceForm) return;
 
-        if (!attendanceForm) return;
+    loadStudentOptions();
 
-        loadStudentOptions();
+    attendanceForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
 
-        attendanceForm.addEventListener(
-            "submit",
-            async function (event) {
+        const data = {
+            student:
+                document.getElementById("attendanceStudent").value,
 
-                event.preventDefault();
+            date:
+                document.getElementById("attendanceDate").value,
 
-                const data = {
+            status:
+                document.getElementById("attendanceStatus").value
+        };
 
-                    student:
-                        document.getElementById(
-                            "attendanceStudent"
-                        ).value,
+        try {
+            const response = await fetch(ATTENDANCE_API, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
 
-                    date:
-                        document.getElementById(
-                            "attendanceDate"
-                        ).value,
+            const result = await response.json();
 
-                    status:
-                        document.getElementById(
-                            "attendanceStatus"
-                        ).value
-
-                };
-
-                try {
-
-                    const response =
-                        await fetch(
-                            ATTENDANCE_API,
-                            {
-                                method: "POST",
-
-                                headers: {
-                                    "Content-Type":
-                                        "application/json"
-                                },
-
-                                body:
-                                    JSON.stringify(data)
-                            }
-                        );
-
-                    const result =
-                        await response.json();
-
-                    if (!response.ok) {
-
-                        alert(
-                            result.message ||
-                            "Failed to save attendance."
-                        );
-
-                        return;
-
-                    }
-
-                    alert(
-                        "Attendance saved successfully!"
-                    );
-
-                    attendanceForm.reset();
-
-                    await loadAttendance();
-
-                    await updateAttendanceStats();
-
-                    await loadAttendanceChart();
-
-                } catch (error) {
-
-                    console.error(
-                        "Attendance error:",
-                        error
-                    );
-
-                    alert(
-                        "Failed to save attendance."
-                    );
-
-                }
-
+            if (!response.ok) {
+                alert(
+                    result.message ||
+                    "Failed to save attendance."
+                );
+                return;
             }
-        );
 
-    }
-);
+            alert("Attendance saved successfully!");
+
+            attendanceForm.reset();
+
+            await loadAttendance();
+            await updateAttendanceStats();
+            await loadAttendanceChart();
+
+        } catch (error) {
+            console.error("Attendance error:", error);
+            alert("Failed to save attendance.");
+        }
+    });
+});
 
 
 // =====================================================
@@ -875,73 +494,47 @@ document.addEventListener(
 // =====================================================
 
 async function loadAttendance() {
-
-    const table =
-        document.getElementById(
-            "attendanceTable"
-        );
+    const table = document.getElementById("attendanceTable");
 
     if (!table) return;
 
     try {
-
-        const response =
-            await fetch(
-                ATTENDANCE_API
-            );
+        const response = await fetch(ATTENDANCE_API);
 
         if (!response.ok) {
-
-            throw new Error(
-                "Failed to load attendance"
-            );
-
+            throw new Error("Failed to load attendance");
         }
 
-        const records =
-            await response.json();
+        const records = await response.json();
 
-        const safeRecords =
-            Array.isArray(records)
-                ? records
-                : [];
+        const safeRecords = Array.isArray(records)
+            ? records
+            : [];
 
         table.innerHTML = "";
 
         safeRecords.forEach(record => {
-
-            const row =
-                document.createElement("tr");
+            const row = document.createElement("tr");
 
             const studentName =
-                record.student &&
-                record.student.name
+                record.student && record.student.name
                     ? record.student.name
                     : "Unknown";
 
-            const date =
-                formatDate(record.date);
+            const date = formatDate(record.date);
 
-            row.innerHTML =
-                `
+            row.innerHTML = `
                 <td>${studentName}</td>
                 <td>${date}</td>
                 <td>${record.status || ""}</td>
-                `;
+            `;
 
             table.appendChild(row);
-
         });
 
     } catch (error) {
-
-        console.error(
-            "Error loading attendance:",
-            error
-        );
-
+        console.error("Error loading attendance:", error);
     }
-
 }
 
 
@@ -949,106 +542,61 @@ async function loadAttendance() {
 // MARKS FORM
 // =====================================================
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
+document.addEventListener("DOMContentLoaded", function () {
+    const marksForm = document.getElementById("marksForm");
 
-        const marksForm =
-            document.getElementById(
-                "marksForm"
-            );
+    if (!marksForm) return;
 
-        if (!marksForm) return;
+    loadStudentOptions();
 
-        loadStudentOptions();
+    marksForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
 
-        marksForm.addEventListener(
-            "submit",
-            async function (event) {
+        const data = {
+            student:
+                document.getElementById("marksStudent").value,
 
-                event.preventDefault();
+            subject:
+                document.getElementById("marksSubject").value.trim(),
 
-                const data = {
+            marks:
+                Number(
+                    document.getElementById("marksValue").value
+                )
+        };
 
-                    student:
-                        document.getElementById(
-                            "marksStudent"
-                        ).value,
+        try {
+            const response = await fetch(MARKS_API, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
 
-                    subject:
-                        document.getElementById(
-                            "marksSubject"
-                        ).value.trim(),
+            const result = await response.json();
 
-                    marks:
-                        Number(
-                            document.getElementById(
-                                "marksValue"
-                            ).value
-                        )
-
-                };
-
-                try {
-
-                    const response =
-                        await fetch(
-                            MARKS_API,
-                            {
-                                method: "POST",
-
-                                headers: {
-                                    "Content-Type":
-                                        "application/json"
-                                },
-
-                                body:
-                                    JSON.stringify(data)
-                            }
-                        );
-
-                    const result =
-                        await response.json();
-
-                    if (!response.ok) {
-
-                        alert(
-                            result.message ||
-                            "Failed to save marks."
-                        );
-
-                        return;
-
-                    }
-
-                    alert(
-                        "Marks saved successfully!"
-                    );
-
-                    marksForm.reset();
-
-                    await loadMarks();
-
-                    await updateMarksStats();
-
-                } catch (error) {
-
-                    console.error(
-                        "Marks error:",
-                        error
-                    );
-
-                    alert(
-                        "Failed to save marks."
-                    );
-
-                }
-
+            if (!response.ok) {
+                alert(
+                    result.message ||
+                    "Failed to save marks."
+                );
+                return;
             }
-        );
 
-    }
-);
+            alert("Marks saved successfully!");
+
+            marksForm.reset();
+
+            await loadMarks();
+            await updateMarksStats();
+
+        } catch (error) {
+            console.error("Marks error:", error);
+            alert("Failed to save marks.");
+        }
+    });
+});
 
 
 // =====================================================
@@ -1056,70 +604,45 @@ document.addEventListener(
 // =====================================================
 
 async function loadMarks() {
-
-    const table =
-        document.getElementById(
-            "marksTable"
-        );
+    const table = document.getElementById("marksTable");
 
     if (!table) return;
 
     try {
-
-        const response =
-            await fetch(
-                MARKS_API
-            );
+        const response = await fetch(MARKS_API);
 
         if (!response.ok) {
-
-            throw new Error(
-                "Failed to load marks"
-            );
-
+            throw new Error("Failed to load marks");
         }
 
-        const records =
-            await response.json();
+        const records = await response.json();
 
-        const safeRecords =
-            Array.isArray(records)
-                ? records
-                : [];
+        const safeRecords = Array.isArray(records)
+            ? records
+            : [];
 
         table.innerHTML = "";
 
         safeRecords.forEach(record => {
-
-            const row =
-                document.createElement("tr");
+            const row = document.createElement("tr");
 
             const studentName =
-                record.student &&
-                record.student.name
+                record.student && record.student.name
                     ? record.student.name
                     : "Unknown";
 
-            row.innerHTML =
-                `
+            row.innerHTML = `
                 <td>${studentName}</td>
                 <td>${record.subject || ""}</td>
                 <td>${record.marks || 0}</td>
-                `;
+            `;
 
             table.appendChild(row);
-
         });
 
     } catch (error) {
-
-        console.error(
-            "Error loading marks:",
-            error
-        );
-
+        console.error("Error loading marks:", error);
     }
-
 }
 
 
@@ -1128,43 +651,32 @@ async function loadMarks() {
 // =====================================================
 
 function getTodayString() {
+    const today = new Date();
 
-    const today =
-        new Date();
-
-    const year =
-        today.getFullYear();
+    const year = today.getFullYear();
 
     const month =
-        String(
-            today.getMonth() + 1
-        ).padStart(2, "0");
+        String(today.getMonth() + 1).padStart(2, "0");
 
     const day =
-        String(
-            today.getDate()
-        ).padStart(2, "0");
+        String(today.getDate()).padStart(2, "0");
 
     return `${year}-${month}-${day}`;
-
 }
 
 
 function formatDate(dateValue) {
-
     if (!dateValue) {
         return "";
     }
 
-    const date =
-        new Date(dateValue);
+    const date = new Date(dateValue);
 
     if (isNaN(date.getTime())) {
         return dateValue;
     }
 
     return date.toLocaleDateString();
-
 }
 
 
@@ -1173,70 +685,46 @@ function formatDate(dateValue) {
 // =====================================================
 
 async function updateAttendanceStats() {
-
     const presentElement =
-        document.getElementById(
-            "presentCount"
-        );
+        document.getElementById("presentCount");
 
     const absentElement =
-        document.getElementById(
-            "absentCount"
-        );
+        document.getElementById("absentCount");
 
-    if (
-        !presentElement &&
-        !absentElement
-    ) {
+    if (!presentElement && !absentElement) {
         return;
     }
 
     try {
-
-        const response =
-            await fetch(
-                ATTENDANCE_API
-            );
+        const response = await fetch(ATTENDANCE_API);
 
         if (!response.ok) {
-
             throw new Error(
                 "Failed to load attendance statistics"
             );
-
         }
 
-        const records =
-            await response.json();
+        const records = await response.json();
 
-        const safeRecords =
-            Array.isArray(records)
-                ? records
-                : [];
+        const safeRecords = Array.isArray(records)
+            ? records
+            : [];
 
-        const todayString =
-            getTodayString();
+        const todayString = getTodayString();
 
         let present = 0;
         let absent = 0;
 
         safeRecords.forEach(record => {
-
             if (!record.date) return;
 
-            const recordDate =
-                new Date(record.date);
+            const recordDate = new Date(record.date);
 
-            if (
-                isNaN(
-                    recordDate.getTime()
-                )
-            ) {
+            if (isNaN(recordDate.getTime())) {
                 return;
             }
 
-            const year =
-                recordDate.getFullYear();
+            const year = recordDate.getFullYear();
 
             const month =
                 String(
@@ -1251,15 +739,9 @@ async function updateAttendanceStats() {
             const recordDateString =
                 `${year}-${month}-${day}`;
 
-            if (
-                recordDateString ===
-                todayString
-            ) {
-
+            if (recordDateString === todayString) {
                 const status =
-                    String(
-                        record.status || ""
-                    )
+                    String(record.status || "")
                         .toLowerCase()
                         .trim();
 
@@ -1270,30 +752,23 @@ async function updateAttendanceStats() {
                 if (status === "absent") {
                     absent++;
                 }
-
             }
-
         });
 
         if (presentElement) {
-            presentElement.textContent =
-                present;
+            presentElement.textContent = present;
         }
 
         if (absentElement) {
-            absentElement.textContent =
-                absent;
+            absentElement.textContent = absent;
         }
 
     } catch (error) {
-
         console.error(
             "Error loading attendance statistics:",
             error
         );
-
     }
-
 }
 
 
@@ -1302,62 +777,42 @@ async function updateAttendanceStats() {
 // =====================================================
 
 async function updateMarksStats() {
-
     const averageElement =
-        document.getElementById(
-            "averageMarks"
-        );
+        document.getElementById("averageMarks");
 
     if (!averageElement) {
         return;
     }
 
     try {
-
-        const response =
-            await fetch(
-                MARKS_API
-            );
+        const response = await fetch(MARKS_API);
 
         if (!response.ok) {
-
             throw new Error(
                 "Failed to load marks statistics"
             );
-
         }
 
-        const records =
-            await response.json();
+        const records = await response.json();
 
-        const safeRecords =
-            Array.isArray(records)
-                ? records
-                : [];
+        const safeRecords = Array.isArray(records)
+            ? records
+            : [];
 
         if (!safeRecords.length) {
-
-            averageElement.textContent =
-                "0";
-
+            averageElement.textContent = "0";
             return;
-
         }
 
-        const total =
-            safeRecords.reduce(
-                (sum, record) => {
-
-                    return (
-                        sum +
-                        Number(
-                            record.marks || 0
-                        )
-                    );
-
-                },
-                0
-            );
+        const total = safeRecords.reduce(
+            (sum, record) => {
+                return (
+                    sum +
+                    Number(record.marks || 0)
+                );
+            },
+            0
+        );
 
         const average =
             total / safeRecords.length;
@@ -1366,14 +821,11 @@ async function updateMarksStats() {
             average.toFixed(1);
 
     } catch (error) {
-
         console.error(
             "Error loading marks statistics:",
             error
         );
-
     }
-
 }
 
 
@@ -1382,36 +834,22 @@ async function updateMarksStats() {
 // =====================================================
 
 function showAddCourse() {
-
     const form =
-        document.getElementById(
-            "courseFormContainer"
-        );
+        document.getElementById("courseFormContainer");
 
     if (form) {
-
-        form.style.display =
-            "block";
-
+        form.style.display = "block";
     }
-
 }
 
 
 function hideAddCourse() {
-
     const form =
-        document.getElementById(
-            "courseFormContainer"
-        );
+        document.getElementById("courseFormContainer");
 
     if (form) {
-
-        form.style.display =
-            "none";
-
+        form.style.display = "none";
     }
-
 }
 
 
@@ -1420,47 +858,28 @@ function hideAddCourse() {
 // =====================================================
 
 async function loadCourses() {
-
     try {
-
-        const response =
-            await fetch(
-                COURSES_API
-            );
+        const response = await fetch(COURSES_API);
 
         if (!response.ok) {
-
-            throw new Error(
-                "Failed to load courses"
-            );
-
+            throw new Error("Failed to load courses");
         }
 
-        const courses =
-            await response.json();
+        const courses = await response.json();
 
-        // IMPORTANT FIX
         allCourses =
             Array.isArray(courses)
                 ? courses
                 : [];
 
         displayCourses(allCourses);
-
         updateCourseCount(allCourses);
 
     } catch (error) {
+        console.error("Error loading courses:", error);
 
-        console.error(
-            "Error loading courses:",
-            error
-        );
-
-        // Keep dashboard count safe
         updateCourseCount([]);
-
     }
-
 }
 
 
@@ -1469,21 +888,15 @@ async function loadCourses() {
 // =====================================================
 
 function updateCourseCount(courses) {
-
     const count =
-        document.getElementById(
-            "courseCount"
-        );
+        document.getElementById("courseCount");
 
     if (count) {
-
         count.textContent =
             Array.isArray(courses)
                 ? courses.length
                 : 0;
-
     }
-
 }
 
 
@@ -1492,11 +905,8 @@ function updateCourseCount(courses) {
 // =====================================================
 
 function displayCourses(courses) {
-
     const table =
-        document.getElementById(
-            "coursesTable"
-        );
+        document.getElementById("coursesTable");
 
     if (!table) return;
 
@@ -1507,25 +917,16 @@ function displayCourses(courses) {
     }
 
     courses.forEach(course => {
-
-        const row =
-            document.createElement("tr");
+        const row = document.createElement("tr");
 
         row.innerHTML = `
-
             <td>${course.name || ""}</td>
-
             <td>${course.code || ""}</td>
-
             <td>${course.duration || ""}</td>
-
             <td>${course.department || ""}</td>
 
             <td>
-
-                <button
-                    onclick="editCourse('${course._id}')"
-                >
+                <button onclick="editCourse('${course._id}')">
                     Edit
                 </button>
 
@@ -1538,15 +939,11 @@ function displayCourses(courses) {
                 >
                     Delete
                 </button>
-
             </td>
-
         `;
 
         table.appendChild(row);
-
     });
-
 }
 
 
@@ -1554,109 +951,65 @@ function displayCourses(courses) {
 // ADD COURSE
 // =====================================================
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
+document.addEventListener("DOMContentLoaded", function () {
+    const courseForm =
+        document.getElementById("courseForm");
 
-        const courseForm =
-            document.getElementById(
-                "courseForm"
-            );
+    if (!courseForm) return;
 
-        if (!courseForm) return;
+    courseForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
 
-        courseForm.addEventListener(
-            "submit",
-            async function (event) {
+        const courseData = {
+            name:
+                document.getElementById("courseName")
+                    .value.trim(),
 
-                event.preventDefault();
+            code:
+                document.getElementById("courseCode")
+                    .value.trim(),
 
-                const courseData = {
+            duration:
+                document.getElementById("courseDuration")
+                    .value.trim(),
 
-                    name:
-                        document.getElementById(
-                            "courseName"
-                        ).value.trim(),
+            department:
+                document.getElementById("courseDepartment")
+                    .value.trim()
+        };
 
-                    code:
-                        document.getElementById(
-                            "courseCode"
-                        ).value.trim(),
+        try {
+            const response = await fetch(COURSES_API, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(courseData)
+            });
 
-                    duration:
-                        document.getElementById(
-                            "courseDuration"
-                        ).value.trim(),
+            const result = await response.json();
 
-                    department:
-                        document.getElementById(
-                            "courseDepartment"
-                        ).value.trim()
-
-                };
-
-                try {
-
-                    const response =
-                        await fetch(
-                            COURSES_API,
-                            {
-                                method: "POST",
-
-                                headers: {
-                                    "Content-Type":
-                                        "application/json"
-                                },
-
-                                body:
-                                    JSON.stringify(
-                                        courseData
-                                    )
-                            }
-                        );
-
-                    const result =
-                        await response.json();
-
-                    if (!response.ok) {
-
-                        alert(
-                            result.message ||
-                            "Failed to add course."
-                        );
-
-                        return;
-
-                    }
-
-                    alert(
-                        "Course added successfully!"
-                    );
-
-                    courseForm.reset();
-
-                    hideAddCourse();
-
-                    await loadCourses();
-
-                } catch (error) {
-
-                    console.error(
-                        "Add course error:",
-                        error
-                    );
-
-                    alert(
-                        "Failed to add course."
-                    );
-
-                }
-
+            if (!response.ok) {
+                alert(
+                    result.message ||
+                    "Failed to add course."
+                );
+                return;
             }
-        );
 
-    }
-);
+            alert("Course added successfully!");
+
+            courseForm.reset();
+            hideAddCourse();
+
+            await loadCourses();
+
+        } catch (error) {
+            console.error("Add course error:", error);
+            alert("Failed to add course.");
+        }
+    });
+});
 
 
 // =====================================================
@@ -1664,46 +1017,33 @@ document.addEventListener(
 // =====================================================
 
 function searchCourses() {
-
     const searchInput =
-        document.getElementById(
-            "courseSearch"
-        );
+        document.getElementById("courseSearch");
 
     if (!searchInput) return;
 
     const searchValue =
-        searchInput.value
-            .toLowerCase()
-            .trim();
+        searchInput.value.toLowerCase().trim();
 
     const filteredCourses =
         allCourses.filter(course => {
-
             const name =
-                (course.name || "")
-                    .toLowerCase();
+                (course.name || "").toLowerCase();
 
             const code =
-                (course.code || "")
-                    .toLowerCase();
+                (course.code || "").toLowerCase();
 
             const department =
-                (course.department || "")
-                    .toLowerCase();
+                (course.department || "").toLowerCase();
 
             return (
                 name.includes(searchValue) ||
                 code.includes(searchValue) ||
                 department.includes(searchValue)
             );
-
         });
 
-    displayCourses(
-        filteredCourses
-    );
-
+    displayCourses(filteredCourses);
 }
 
 
@@ -1712,26 +1052,19 @@ function searchCourses() {
 // =====================================================
 
 async function editCourse(id) {
-
     try {
-
         const response =
-            await fetch(
-                `${COURSES_API}/${id}`
-            );
+            await fetch(`${COURSES_API}/${id}`);
 
         const course =
             await response.json();
 
         if (!response.ok) {
-
             alert(
                 course.message ||
                 "Failed to load course."
             );
-
             return;
-
         }
 
         const newName =
@@ -1767,72 +1100,40 @@ async function editCourse(id) {
         if (newDepartment === null) return;
 
         const updatedCourse = {
-
-            name:
-                newName.trim(),
-
-            code:
-                newCode.trim(),
-
-            duration:
-                newDuration.trim(),
-
-            department:
-                newDepartment.trim()
-
+            name: newName.trim(),
+            code: newCode.trim(),
+            duration: newDuration.trim(),
+            department: newDepartment.trim()
         };
 
         const updateResponse =
-            await fetch(
-                `${COURSES_API}/${id}`,
-                {
-                    method: "PUT",
-
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body:
-                        JSON.stringify(
-                            updatedCourse
-                        )
-                }
-            );
+            await fetch(`${COURSES_API}/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(updatedCourse)
+            });
 
         const result =
             await updateResponse.json();
 
         if (!updateResponse.ok) {
-
             alert(
                 result.message ||
                 "Failed to update course."
             );
-
             return;
-
         }
 
-        alert(
-            "Course updated successfully!"
-        );
+        alert("Course updated successfully!");
 
         await loadCourses();
 
     } catch (error) {
-
-        console.error(
-            "Edit course error:",
-            error
-        );
-
-        alert(
-            "Failed to update course."
-        );
-
+        console.error("Edit course error:", error);
+        alert("Failed to load/update course.");
     }
-
 }
 
 
@@ -1841,7 +1142,6 @@ async function editCourse(id) {
 // =====================================================
 
 async function deleteCourse(id) {
-
     const confirmed =
         confirm(
             "Are you sure you want to delete this course?"
@@ -1850,48 +1150,30 @@ async function deleteCourse(id) {
     if (!confirmed) return;
 
     try {
-
         const response =
-            await fetch(
-                `${COURSES_API}/${id}`,
-                {
-                    method: "DELETE"
-                }
-            );
+            await fetch(`${COURSES_API}/${id}`, {
+                method: "DELETE"
+            });
 
         const result =
             await response.json();
 
         if (!response.ok) {
-
             alert(
                 result.message ||
                 "Failed to delete course."
             );
-
             return;
-
         }
 
-        alert(
-            "Course deleted successfully!"
-        );
+        alert("Course deleted successfully!");
 
         await loadCourses();
 
     } catch (error) {
-
-        console.error(
-            "Delete course error:",
-            error
-        );
-
-        alert(
-            "Failed to delete course."
-        );
-
+        console.error("Delete course error:", error);
+        alert("Failed to delete course.");
     }
-
 }
 
 
@@ -1900,12 +1182,9 @@ async function deleteCourse(id) {
 // =====================================================
 
 function logout() {
-
     localStorage.removeItem("admin");
 
-    window.location.href =
-        "index.html";
-
+    window.location.href = "index.html";
 }
 
 
@@ -1914,40 +1193,26 @@ function logout() {
 // =====================================================
 
 async function loadAttendanceChart() {
-
     const canvas =
-        document.getElementById(
-            "attendanceChart"
-        );
+        document.getElementById("attendanceChart");
 
     if (!canvas) {
         return;
     }
 
-    // Check Chart.js
     if (typeof Chart === "undefined") {
-
-        console.error(
-            "Chart.js is not loaded."
-        );
-
+        console.error("Chart.js is not loaded.");
         return;
-
     }
 
     try {
-
         const response =
-            await fetch(
-                ATTENDANCE_API
-            );
+            await fetch(ATTENDANCE_API);
 
         if (!response.ok) {
-
             throw new Error(
                 "Failed to load attendance data"
             );
-
         }
 
         const records =
@@ -1962,11 +1227,8 @@ async function loadAttendanceChart() {
         let absent = 0;
 
         safeRecords.forEach(record => {
-
             const status =
-                String(
-                    record.status || ""
-                )
+                String(record.status || "")
                     .toLowerCase()
                     .trim();
 
@@ -1977,7 +1239,6 @@ async function loadAttendanceChart() {
             if (status === "absent") {
                 absent++;
             }
-
         });
 
         console.log(
@@ -1993,89 +1254,67 @@ async function loadAttendanceChart() {
         );
 
         if (attendanceChart) {
-
             attendanceChart.destroy();
-
         }
 
         attendanceChart =
-            new Chart(
-                canvas,
-                {
-                    type: "pie",
+            new Chart(canvas, {
+                type: "pie",
 
-                    data: {
+                data: {
+                    labels: [
+                        "Present",
+                        "Absent"
+                    ],
 
-                        labels: [
-                            "Present",
-                            "Absent"
-                        ],
+                    datasets: [
+                        {
+                            data: [
+                                present,
+                                absent
+                            ],
 
-                        datasets: [
-                            {
-                                data: [
-                                    present,
-                                    absent
-                                ],
+                            backgroundColor: [
+                                "#198754",
+                                "#c0392b"
+                            ],
 
-                                backgroundColor: [
-                                    "#198754",
-                                    "#c0392b"
-                                ],
+                            borderColor: "#ffffff",
 
-                                borderColor:
-                                    "#ffffff",
-
-                                borderWidth: 3
-                            }
-                        ]
-
-                    },
-
-                    options: {
-
-                        responsive: true,
-
-                        maintainAspectRatio:
-                            false,
-
-                        plugins: {
-
-                            legend: {
-
-                                display: true,
-
-                                position:
-                                    "bottom",
-
-                                labels: {
-
-                                    padding: 20,
-
-                                    font: {
-                                        size: 14
-                                    }
-
-                                }
-
-                            }
-
+                            borderWidth: 3
                         }
+                    ]
+                },
 
+                options: {
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    plugins: {
+                        legend: {
+                            display: true,
+
+                            position: "bottom",
+
+                            labels: {
+                                padding: 20,
+
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        }
                     }
-
                 }
-            );
+            });
 
     } catch (error) {
-
         console.error(
             "Attendance chart error:",
             error
         );
-
     }
-
 }
 
 
@@ -2087,9 +1326,7 @@ document.addEventListener(
     "DOMContentLoaded",
     async function () {
 
-        console.log(
-            "Dashboard loading..."
-        );
+        console.log("Dashboard loading...");
 
         await loadStudents();
 
@@ -2103,15 +1340,13 @@ document.addEventListener(
 
         await loadCourses();
 
-        // DO NOT call updateCourseCount()
-        // separately here.
-        // loadCourses() already updates it.
+        // loadCourses() already updates
+        // the course count.
 
         await loadAttendanceChart();
 
         console.log(
             "Dashboard loaded successfully."
         );
-
     }
 );
